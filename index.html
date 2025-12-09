@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>TinDog</title>
+
+  <link rel="stylesheet" href="https://fonts.google.com/share?selection.family=Montserrat:ital,wght@0,100;0,400;1,900%7CUbuntu:wght@300">
+  <!-- bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <!-- google fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.google.com/share?selection.family=Montserrat:ital,wght@0,100;0,400;1,900%7CUbuntu:wght@300">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
+  <!-- font awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css">
+  <!-- css -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+
+
+<div class="box">
+    <h2 class="text-center">Science Quiz</h2>
+    <p class="text-center text-muted">Pick one answer for each question</p>
+    <p class="text-center fs-4">Question <strong id="current">1</strong> of <span id="total"></span></p>
+    <hr>
+
+    <div id="question"></div>
+
+    <div class="mt-4 d-flex justify-content-between">
+        <button id="prev" class="btn btn-outline-secondary" disabled>Previous</button>
+        <button id="next" class="btn btn-primary">Next</button>
+        <button id="done" class="btn btn-success d-none">Finish Quiz</button>
+    </div>
+</div>
+
+<div id="result" class="text-center mt-5"></div>
+
+<script>
+    const quiz = [
+  { q: "1-ECCR: In an exothermic reaction, energy is…", a: ["taken in", "given out", "unchanged", "destroyed"], correct: 1 },
+  { q: "1-ECCR: Burning methane in a Bunsen burner is an example of…", a: ["an endothermic reaction", "an exothermic reaction", "a physical change", "a slow reaction"], correct: 1 },
+  { q: "1-ECCR: Which of these always feels cold when it happens?", a: ["burning", "photosynthesis", "dissolving ammonium nitrate in water", "neutralisation"], correct: 2 },
+  { q: "1-ECCR: Bond breaking…", a: ["releases energy", "requires energy", "does nothing to energy", "only happens in exothermic reactions"], correct: 1 },
+  { q: "1-ECCR: Bond making…", a: ["requires energy", "releases energy", "is impossible", "only happens in endothermic reactions"], correct: 1 },
+  { q: "1-ECCR: If more energy is released making bonds than is used breaking them, the reaction is…", a: ["endothermic", "exothermic", "reversible", "neutral"], correct: 1 },
+  { q: "1-ECCR: Which reaction is used in hand warmers?", a: ["dissolving sugar", "rusting of iron", "oxidation of iron wool with oxygen", "combustion of magnesium"], correct: 2 },
+  { q: "1-ECCR: Photosynthesis is…", a: ["exothermic", "endothermic", "neither", "both"], correct: 1 },
+  { q: "1-ECCR: A reaction that gets hotter is…", a: ["endothermic", "exothermic", "slow", "fast"], correct: 1 },
+  { q: "1-ECCR: The minimum energy needed to start a reaction is called…", a: ["activation energy", "bond energy", "heat energy", "kinetic energy"], correct: 0 },
+  { q: "2-Materials: Which of these is a natural polymer?", a: ["poly(ethene)", "PVC", "protein", "nylon"], correct: 2 },
+  { q: "2-Materials: Most plastics are made from…", a: ["crude oil", "metal ores", "wood", "sand"], correct: 0 },
+  { q: "2-Materials: Which metal is highest in the reactivity series?", a: ["gold", "copper", "potassium", "iron"], correct: 2 },
+  { q: "2-Materials: Which metal reacts violently with cold water?", a: ["magnesium", "zinc", "sodium", "copper"], correct: 2 },
+  { q: "2-Materials: When iron reacts with oxygen and water it forms…", a: ["rust", "carbon dioxide", "hydrogen", "steel"], correct: 0 },
+  { q: "2-Materials: Which metal will NOT displace copper from copper sulfate solution?", a: ["zinc", "magnesium", "silver", "iron"], correct: 2 },
+  { q: "2-Materials: Poly(ethene) is made by joining many…", a: ["glucose molecules", "ethene molecules", "amino acids", "metal atoms"], correct: 1 },
+  { q: "2-Materials: Aluminium is covered in a thin layer of aluminium oxide that…", a: ["makes it rust", "protects it from further corrosion", "makes it weaker", "lets water through"], correct: 1 },
+  { q: "2-Materials: Which is the correct order (most reactive → least reactive)?", a: ["K > Ca > Mg > Zn", "Zn > Mg > Ca > K", "Au > Ag > Cu > Fe", "Mg > Fe > Cu > Au"], correct: 0 },
+  { q: "2-Materials: Thermosetting plastics…", a: ["melt when heated", "do not melt when heated", "are always transparent", "are natural"], correct: 1 },
+  { q: "3-Food and Digestion: Which enzyme in the mouth breaks down starch?", a: ["protease", "lipase", "amylase", "bile"], correct: 2 },
+  { q: "3-Food and Digestion: Food is mainly absorbed in the…", a: ["stomach", "large intestine", "small intestine", "mouth"], correct: 2 },
+  { q: "3-Food and Digestion: Which nutrient provides the most energy per gram?", a: ["carbohydrate", "protein", "fat", "vitamins"], correct: 2 },
+  { q: "3-Food and Digestion: Bile is made in the…", a: ["pancreas", "liver", "stomach", "gall bladder"], correct: 1 },
+  { q: "3-Food and Digestion: Bile helps to helps to digest…", a: ["proteins", "starches", "fats", "vitamins"], correct: 2 },
+  { q: "3-Food and Digestion: Which acid is found in the stomach?", a: ["citric acid", "ethanoic acid", "hydrochloric acid", "sulfuric acid"], correct: 2 },
+  { q: "3-Food and Digestion: Proteins are broken down into…", a: ["glucose", "fatty acids", "amino acids", "starch"], correct: 2 },
+  { q: "3-Food and Digestion: Cellulose is a type of…", a: ["fat", "protein", "carbohydrate (fibre)", "mineral"], correct: 2 },
+  { q: "3-Food and Digestion: Peristalsis is…", a: ["chewing", "waves of muscle contraction that move food along", "absorption", "breathing"], correct: 1 },
+  { q: "3-Food and Digestion: Lack of vitamin C causes…", a: ["rickets", "scurvy", "anaemia", "night blindness"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: Current is measured in…", a: ["volts", "amperes (amps)", "ohms", "watts"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: In a series circuit the current is…", a: ["different in each component", "the same everywhere", "zero", "very high"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: Resistance is measured in…", a: ["volts", "amps", "ohms", "joules"], correct: 2 },
+  { q: "4-Electricity nd Magnetism: Which material is a good conductor?", a: ["plastic", "wood", "copper", "rubber"], correct: 2 },
+  { q: "4-Electricity nd Magnetism: Opposite magnetic poles…", a: ["repel", "attract", "do nothing", "disappear"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: Like magnetic poles…", a: ["attract", "repel", "stick together", "cancel out"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: An electromagnet uses…", a: ["a permanent magnet only", "electric current in a coil of wire", "static electricity", "a battery and rubber"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: In a parallel circuit, if one bulb breaks…", a: ["all bulbs go out", "the other bulbs stay lit", "the voltage increases", "the current stops"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: Potential difference (voltage) is measured with a…", a: ["ammeter", "voltmeter", "ohmmeter", "thermometer"], correct: 1 },
+  { q: "4-Electricity nd Magnetism: The Earth’s core is magnetic because of…", a: ["moving molten iron", "gravity", "the Moon", "solar wind"], correct: 0 }
+];
+
+
+    let n = 0;
+    let answers = new Array(quiz.length).fill(-1);
+
+    const questionDiv = document.getElementById("question");
+    const currentSpan = document.getElementById("current");
+    const totalSpan   = document.getElementById("total");
+    const prevBtn     = document.getElementById("prev");
+    const nextBtn     = document.getElementById("next");
+    const doneBtn     = document.getElementById("done");
+    const resultDiv   = document.getElementById("result");
+
+    totalSpan.textContent = quiz.length;
+
+    function showQuestion() {
+        let q = quiz[n];
+
+        currentSpan.textContent = n + 1;
+
+        questionDiv.innerHTML = `
+            <h5>Question ${n+1} of ${quiz.length}</h5>
+            <p class="lead mb-4">${q.q}</p>
+            ${q.a.map((text, i) => `
+                <div class="form-check p-3 border rounded mb-2">
+                    <input class="form-check-input" type="radio" name="choice" value="${i}"
+                           ${answers[n] === i ? 'checked' : ''}>
+                    <label class="form-check-label">${text}</label>
+                </div>
+            `).join('')}
+        `;
+
+        prevBtn.disabled = (n === 0);
+        nextBtn.textContent = (n === quiz.length-1) ? "Review" : "Next";
+        doneBtn.classList.toggle("d-none", n !== quiz.length-1);
+
+        document.querySelectorAll('input[name="choice"]').forEach(radio => {
+            radio.onchange = () => {
+                answers[n] = Number(radio.value);
+            };
+        });
+    }
+
+    prevBtn.onclick = () => { if (n > 0) { n--; showQuestion(); } };
+    nextBtn.onclick = () => { if (n < quiz.length-1) { n++; showQuestion(); } };
+
+    doneBtn.onclick = () => {
+        let correct = 0;
+        for (let i = 0; i < quiz.length; i++) {
+            if (answers[i] === quiz[i].correct) correct++;
+        }
+
+        let message = correct === quiz.length ? "Perfect score! Genius!"
+                    : correct >= quiz.length * 0.7 ? "Great job!"
+                    : "Good effort – try again!";
+
+        resultDiv.innerHTML = `
+            <div class="box p-5">
+                <h1>All Done!</h1>
+                <h2 class="mt-4">You got ${correct} out of ${quiz.length} correct</h2>
+                <p class="display-6 mt-4">${message}</p>
+                <button class="btn btn-primary btn-lg mt-4" onclick="location.reload()">Play Again</button>
+            </div>
+        `;
+
+        document.querySelector('.box').style.display = 'none';
+    };
+
+    showQuestion();
+</script>
+
+
+</body>
+
+</html>
